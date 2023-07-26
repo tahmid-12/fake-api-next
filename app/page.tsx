@@ -1,35 +1,19 @@
-import Searchbar from './components/searchbar/Searchbar'
-import Sorting from './components/sorting/Sorting'
-import Cards from './components/cards/Cards';
-import { fetchProducts } from '@/utils'
+import Product from "@/components/Product";
 
 export default async function Home() {
-
-  const allProducts = await fetchProducts();
-
-  console.log("products =>", allProducts);
-
-  const isDataEmpty = !Array.isArray(allProducts) || allProducts.length < 1 || !allProducts;
-
+  const res = await fetch("https://fakestoreapi.com/products");
+  const products: Product[] = await res.json();
 
   return (
-    <div className='flex-col justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8'>
-      <div className='flex justify-between mt-12 w-full flex-between items-center flex-wrap gap-5'>
-        <Searchbar />
-        <Sorting />
-      </div>
-      {!isDataEmpty ? (
-        <div className='flex flex-wrap gap-[10px] mt-12'>
-          {allProducts?.map((products) => (
-            <Cards products={products} />
+    <main className="min-h-screen max-w-7xl mx-auto px-8 xl:px-0 mt-48">
+      <section className="flex flex-col space-y-12 pb-44">
+        <h1 className="text-5xl font-bold text-center">DEALS OF THE DAY</h1>
+        <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+          {products.map((product) => (
+            <Product key={product.id} product={product} />
           ))}
         </div>
-      ) : (
-        <div className='flex flex-wrap gap-[10px] mt-12'>
-          <h2 className='text-black text-xl font-bold'>Oops, no results</h2>
-        </div>
-      )
-      }
-    </div>
-  )
+      </section>
+    </main>
+  );
 }
